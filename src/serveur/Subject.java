@@ -38,7 +38,12 @@ public class Subject implements ISubject{
 		// TODO Auto-generated method stub
 		return false;
 	}
-
+	
+	
+	public void pullMessage(String message) throws RemoteException {
+		this.history.add(message);
+	}
+	
 	public ArrayList<String> getHistory() {
 		return history;
 	}

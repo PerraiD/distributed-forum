@@ -11,4 +11,5 @@ public interface ISubject extends Remote{
 	public boolean subscription()throws RemoteException;
 	
 	public boolean unsubscribe()throws RemoteException;
+	
 }
