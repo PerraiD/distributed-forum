@@ -1,9 +1,10 @@
 package serveur;
 
+import java.io.Serializable;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 
-public class Subject implements ISubject{
+public class Subject implements ISubject,Serializable{
 	
 	/* 
 	 * liste des pointeurs vers les abonnée
@@ -14,7 +15,7 @@ public class Subject implements ISubject{
 	
 	private String name;
 	
-	public Subject(String name){
+	public Subject(String name) {
 		this.name = name;	
 		this.history= new ArrayList<String>();
 	}
@@ -40,8 +41,24 @@ public class Subject implements ISubject{
 	}
 	
 	
-	public void pullMessage(String message) throws RemoteException {
+	public void putMessage(String message) throws RemoteException {
 		this.history.add(message);
+	}
+	
+	public ArrayList<String> getLastMessages(int n) {
+		
+		ArrayList<String> messages = new ArrayList<String>();
+		
+		if (n <= history.size()) {
+			for(int i=0;i<history.size();i++) {
+				messages.add(history.get(i));
+			}
+		} else {
+			return history;
+		}
+		
+		return messages;
+		
 	}
 	
 	public ArrayList<String> getHistory() {

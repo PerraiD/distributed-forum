@@ -1,9 +1,10 @@
 package client;
 
+import java.io.Serializable;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 
-public class CustomerView extends UnicastRemoteObject implements ICustomerView {
+public class CustomerView extends UnicastRemoteObject implements ICustomerView,Serializable {
 
 
 
@@ -13,7 +14,7 @@ public class CustomerView extends UnicastRemoteObject implements ICustomerView {
 	} 
 	
 	@Override
-	public void affiche() throws RemoteException {
+	public void show() throws RemoteException {
 		// TODO Auto-generated method stub
 		
 	}

@@ -1,12 +1,13 @@
 package serveur;
 
+import java.io.Serializable;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 
 
 
-public class ForumServer extends UnicastRemoteObject  implements IForumServer {
+public class ForumServer extends UnicastRemoteObject  implements IForumServer, Serializable {
 
 		
 		private ArrayList<Subject> subjectList;

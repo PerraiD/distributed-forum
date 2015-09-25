@@ -4,7 +4,7 @@ public class ForumCustomer {
 	
 	private String name;
 	
-	public ForumCustomer(String name){
+	public ForumCustomer(String name) {
 		this.name=name;
 	}
 
