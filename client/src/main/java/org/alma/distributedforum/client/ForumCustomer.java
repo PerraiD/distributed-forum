@@ -1,4 +1,4 @@
-package client;
+package org.alma.distributedforum.client;
 
 public class ForumCustomer {
 	
