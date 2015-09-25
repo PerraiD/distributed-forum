@@ -1,4 +1,4 @@
-package serveur;
+package org.alma.distributedforum.serveur;
 
 import java.rmi.Remote;
 
