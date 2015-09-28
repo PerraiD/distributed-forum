@@ -1,10 +1,10 @@
 package org.alma.distributedforum.client;
 
 public class ForumCustomer {
-	
+
 	private String name;
-	
-	public ForumCustomer(String name){
+
+	public ForumCustomer(String name) {
 		this.name=name;
 	}
 
@@ -15,8 +15,4 @@ public class ForumCustomer {
 	public void setNom(String name) {
 		this.name = name;
 	}
-	
-	
-	
-	
 }

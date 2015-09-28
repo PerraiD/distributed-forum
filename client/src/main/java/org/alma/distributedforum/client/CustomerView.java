@@ -3,9 +3,7 @@ package org.alma.distributedforum.client;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 
-public class CustomerView extends UnicastRemoteObject implements org.alma.distributedforum.client.ICustomerView {
-
-
+public class CustomerView extends UnicastRemoteObject implements ICustomerView {
 
 	protected CustomerView() throws RemoteException {
 		super();
@@ -15,10 +13,5 @@ public class CustomerView extends UnicastRemoteObject implements org.alma.distri
 	@Override
 	public void affiche() throws RemoteException {
 		// TODO Auto-generated method stub
-
 	}
-
-
-
-
 }
