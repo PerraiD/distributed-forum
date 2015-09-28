@@ -6,7 +6,7 @@ import java.util.ArrayList;
 public class Subject implements ISubject {
 
 	/*
-	 * liste des pointeurs vers les abonnée
+	 * list of pointers to all subscriber
 	 */
 	private ArrayList<String> history;
 

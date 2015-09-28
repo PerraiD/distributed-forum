@@ -5,5 +5,5 @@ import java.rmi.RemoteException;
 
 public interface ICustomerView extends Remote {
 
-	public void affiche() throws RemoteException;
+	void affiche() throws RemoteException;
 }

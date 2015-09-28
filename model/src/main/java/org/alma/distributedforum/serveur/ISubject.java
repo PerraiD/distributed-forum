@@ -5,10 +5,10 @@ import java.rmi.RemoteException;
 
 public interface ISubject extends Remote {
 
-	public boolean broadcast() throws RemoteException;
+	boolean broadcast() throws RemoteException;
 
-	public boolean subscription() throws RemoteException;
+	boolean subscription() throws RemoteException;
 
-	public boolean unsubscribe() throws RemoteException;
+	boolean unsubscribe () throws RemoteException;
 
 }
