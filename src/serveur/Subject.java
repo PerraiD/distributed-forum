@@ -10,7 +10,8 @@ public class Subject implements ISubject,Serializable{
 	 * liste des pointeurs vers les abonnée
 	 */
 	
-
+	
+	
 	private ArrayList<String> history;
 	
 	private String name;

@@ -15,7 +15,7 @@ public class CustomerView extends UnicastRemoteObject implements ICustomerView,S
 	
 	@Override
 	public void show() throws RemoteException {
-		// TODO Auto-generated method stub
+		
 		
 	}
 

@@ -10,10 +10,10 @@ import java.util.ArrayList;
 public class ForumServer extends UnicastRemoteObject  implements IForumServer, Serializable {
 
 		
-		private ArrayList<Subject> subjectList;
+		private ArrayList<ISubject> subjectList;
 		
 		protected ForumServer() throws RemoteException {
-			subjectList=new ArrayList<Subject>();
+			subjectList=new ArrayList<ISubject>();
 			
 			/** some subjectList for the moment**/
 			
@@ -28,14 +28,14 @@ public class ForumServer extends UnicastRemoteObject  implements IForumServer, S
 		@Override
 		public ISubject ObtainSubject(String name) {
 			
-			for(Subject s : subjectList){
+			for(ISubject s : subjectList){
 				if(s.getName().equals(name)){
 					return s;
 				}
 			}
 			return null;
 		}
-
+		 
 
 		
 		
