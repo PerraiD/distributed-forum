@@ -4,34 +4,18 @@ import java.io.Serializable;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 
-<<<<<<< HEAD:src/serveur/Subject.java
 public class Subject implements ISubject,Serializable{
 	
 	/* 
 	 * liste des pointeurs vers les abonnée
 	 */
 	
-	
-	
-=======
-public class Subject implements ISubject {
-
-	/*
-	 * list of pointers to all subscriber
-	 */
->>>>>>> f08f183bda032323e9b1b4b8ec13c762283a7f93:server/src/main/java/org/alma/distributedforum/serveur/Subject.java
+	private String name;
 	private ArrayList<String> history;
 
-	private String name;
-<<<<<<< HEAD:src/serveur/Subject.java
-	
-	public Subject(String name) {
-		this.name = name;	
-=======
 
 	public Subject(String name){
 		this.name = name;
->>>>>>> f08f183bda032323e9b1b4b8ec13c762283a7f93:server/src/main/java/org/alma/distributedforum/serveur/Subject.java
 		this.history= new ArrayList<String>();
 	}
 
@@ -52,7 +36,6 @@ public class Subject implements ISubject {
 		// TODO Auto-generated method stub
 		return false;
 	}
-<<<<<<< HEAD:src/serveur/Subject.java
 	
 	
 	public void putMessage(String message) throws RemoteException {
@@ -75,13 +58,6 @@ public class Subject implements ISubject {
 		
 	}
 	
-=======
-
-	public void pullMessage(String message) throws RemoteException {
-		this.history.add(message);
-	}
-
->>>>>>> f08f183bda032323e9b1b4b8ec13c762283a7f93:server/src/main/java/org/alma/distributedforum/serveur/Subject.java
 	public ArrayList<String> getHistory() {
 		return history;
 	}
