@@ -11,6 +11,11 @@
 
   <artifactId>server</artifactId>
 
+  <properties>
+    <java.mainClass>org.alma.distributedforum.serveur.Server</java.mainClass>
+    <assembly.skipAssembly>false</assembly.skipAssembly>
+    <assembly.appendAssemblyId>false</assembly.appendAssemblyId>
+  </properties>
 
   <dependencies>
     <dependency>
@@ -18,4 +23,37 @@
       <artifactId>model</artifactId>
     </dependency>
   </dependencies>
+
+  <build>
+    <directory>${basedir}/target</directory>
+    <finalName>${project.artifactId}-${project.version}</finalName>
+
+    <plugins>
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <artifactId>maven-jar-plugin</artifactId>
+        <configuration>
+          <archive>
+            <manifest>
+              <mainClass>${java.mainClass}</mainClass>
+              <addClasspath>${jar.addClassPath}</addClasspath>
+            </manifest>
+          </archive>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <configuration>
+          <archive>
+            <manifest>
+              <mainClass>${java.mainClass}</mainClass>
+              <addClasspath>${jar.addClassPath}</addClasspath>
+            </manifest>
+          </archive>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 </project>

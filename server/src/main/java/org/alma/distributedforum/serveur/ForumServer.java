@@ -3,16 +3,19 @@ package org.alma.distributedforum.serveur;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
+import java.util.List;
 
-public class ForumServer extends UnicastRemoteObject  implements IForumServer {
+public class ForumServer extends UnicastRemoteObject implements IForumServer {
 
-	private ArrayList<Subject> subjectList;
+	private List<ISubject> subjectList;
 
 	protected ForumServer() throws RemoteException {
-		subjectList=new ArrayList<Subject>();
+    super(10000);
+
+		subjectList= new ArrayList<ISubject>();
 
 		/** some subjectList for the moment**/
-
+    
 		subjectList.add(new Subject("Sport"));
 		subjectList.add(new Subject("Musique"));
 		subjectList.add(new Subject("Art"));
@@ -22,11 +25,16 @@ public class ForumServer extends UnicastRemoteObject  implements IForumServer {
 	@Override
 	public ISubject ObtainSubject(String name) {
 
-		for(Subject s : subjectList){
-			if(s.getName().equals(name)){
+		for(ISubject s : subjectList){
+			if(((Subject)s).getName().equals(name)){
 				return s;
 			}
 		}
 		return null;
+	}
+
+	@Override
+	public List<ISubject> ListSubject() {
+		return subjectList;
 	}
 }

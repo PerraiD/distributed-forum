@@ -1,9 +1,13 @@
 package org.alma.distributedforum.serveur;
 
 import java.rmi.Remote;
+import java.rmi.RemoteException;
+import java.util.List;
 
 public interface IForumServer extends Remote {
 
-	ISubject ObtainSubject(String nom);
+	ISubject ObtainSubject(String nom) throws RemoteException;
+
+	List<ISubject> ListSubject() throws RemoteException;
 
 }

@@ -11,4 +11,6 @@ public interface ISubject extends Remote {
 
 	boolean unsubscribe () throws RemoteException;
 
+	String getName() throws RemoteException;
+
 }

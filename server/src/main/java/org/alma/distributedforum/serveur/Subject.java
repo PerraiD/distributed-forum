@@ -2,20 +2,24 @@ package org.alma.distributedforum.serveur;
 
 import java.io.Serializable;
 import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
+import java.util.List;
 
-public class Subject implements ISubject,Serializable{
+public class Subject extends UnicastRemoteObject implements ISubject,Serializable {
 	
 	/* 
 	 * liste des pointeurs vers les abonnée
 	 */
 	
 	private String name;
-	private ArrayList<String> history;
+	private List<String> history;
 
 
-	public Subject(String name){
-		this.name = name;
+	public Subject(String name) throws RemoteException {
+    super(10000);
+
+    this.name = name;
 		this.history= new ArrayList<String>();
 	}
 
@@ -42,13 +46,13 @@ public class Subject implements ISubject,Serializable{
 		this.history.add(message);
 	}
 	
-	public ArrayList<String> getLastMessages(int n) {
+	public List<String> getLastMessages(int n) {
 		
-		ArrayList<String> messages = new ArrayList<String>();
+		List<String> messages = new ArrayList<String>();
 		
 		if (n <= history.size()) {
-			for(int i=0;i<history.size();i++) {
-				messages.add(history.get(i));
+			for (String aHistory : history) {
+				messages.add(aHistory);
 			}
 		} else {
 			return history;
@@ -58,11 +62,11 @@ public class Subject implements ISubject,Serializable{
 		
 	}
 	
-	public ArrayList<String> getHistory() {
+	public List<String> getHistory() {
 		return history;
 	}
 
-	public void setHistory(ArrayList<String> history) {
+	public void setHistory(List<String> history) {
 		this.history = history;
 	}
 
