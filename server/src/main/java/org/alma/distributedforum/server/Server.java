@@ -1,4 +1,4 @@
-package org.alma.distributedforum.serveur;
+package org.alma.distributedforum.server;
 
 import java.rmi.RMISecurityManager;
 import java.rmi.registry.LocateRegistry;

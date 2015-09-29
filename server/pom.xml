@@ -12,7 +12,7 @@
   <artifactId>server</artifactId>
 
   <properties>
-    <java.mainClass>org.alma.distributedforum.serveur.Server</java.mainClass>
+    <java.mainClass>org.alma.distributedforum.server.Server</java.mainClass>
     <assembly.skipAssembly>false</assembly.skipAssembly>
     <assembly.appendAssemblyId>false</assembly.appendAssemblyId>
   </properties>

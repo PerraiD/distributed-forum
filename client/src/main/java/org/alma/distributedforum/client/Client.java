@@ -1,6 +1,6 @@
 package org.alma.distributedforum.client;
 
-import org.alma.distributedforum.serveur.IForumServer;
+import org.alma.distributedforum.server.IForumServer;
 
 import java.rmi.RMISecurityManager;
 import java.rmi.registry.LocateRegistry;

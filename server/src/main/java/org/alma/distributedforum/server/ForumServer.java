@@ -1,4 +1,4 @@
-package org.alma.distributedforum.serveur;
+package org.alma.distributedforum.server;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
@@ -15,7 +15,7 @@ public class ForumServer extends UnicastRemoteObject implements IForumServer {
 		subjectList= new ArrayList<ISubject>();
 
 		/** some subjectList for the moment**/
-    
+
 		subjectList.add(new Subject("Sport"));
 		subjectList.add(new Subject("Musique"));
 		subjectList.add(new Subject("Art"));

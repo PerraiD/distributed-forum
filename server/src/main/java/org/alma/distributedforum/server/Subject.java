@@ -1,4 +1,4 @@
-package org.alma.distributedforum.serveur;
+package org.alma.distributedforum.server;
 
 import java.io.Serializable;
 import java.rmi.RemoteException;
