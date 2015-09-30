@@ -24,14 +24,14 @@ public class Client {
       IForumServer forumServer = (IForumServer) registry.lookup("forum");
 
       ICustomerView myView = new CustomerView();
-      ISubject subject = forumServer.ObtainSubject("Art");
-      subject.subscription(myView);
+      ISubject subject = forumServer.getSubject("Art");
+      subject.subscribe(myView);
 
-      subject.putMessage("Hello");
+      subject.sendMessage("Hello");
 
       subject.unsubscribe(myView);
 
-      subject.putMessage("wold!");
+      subject.sendMessage("wold!");
 
       UnicastRemoteObject.unexportObject(myView, true);
 

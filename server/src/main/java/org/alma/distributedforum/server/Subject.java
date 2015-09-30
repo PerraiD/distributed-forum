@@ -29,6 +29,11 @@ public class Subject extends UnicastRemoteObject implements ISubject,Serializabl
 		viewers = new LinkedHashSet<ICustomerView>();
 	}
 
+	/**
+	 * Send the message at all viewers
+	 *
+	 * @param message message sent
+	 */
 	public void broadcast(String message) {
 		// TODO Auto-generated method stub
 		System.out.println("broadcast");
@@ -42,7 +47,7 @@ public class Subject extends UnicastRemoteObject implements ISubject,Serializabl
 	}
 
 	@Override
-	public boolean subscription(ICustomerView view) throws RemoteException {
+	public boolean subscribe(ICustomerView view) throws RemoteException {
 		// TODO Auto-generated method stub
 		System.out.println("Subcribe");
 		return viewers.add(view);
@@ -56,7 +61,7 @@ public class Subject extends UnicastRemoteObject implements ISubject,Serializabl
 	}
 
 	@Override
-	public void putMessage(String message) throws RemoteException {
+	public void sendMessage(String message) throws RemoteException {
 		System.out.println("receive message : " + message);
 		history.add(message);
 		broadcast(message);
@@ -86,11 +91,8 @@ public class Subject extends UnicastRemoteObject implements ISubject,Serializabl
 		this.history = history;
 	}
 
+	@Override
 	public String getName() {
 		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
 	}
 }
