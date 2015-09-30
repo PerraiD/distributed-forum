@@ -10,7 +10,7 @@ public class ForumServer extends UnicastRemoteObject implements IForumServer {
 	private List<ISubject> subjectList;
 
 	protected ForumServer() throws RemoteException {
-    super(10000);
+		super(10000);
 
 		subjectList= new ArrayList<ISubject>();
 

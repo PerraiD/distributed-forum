@@ -6,5 +6,5 @@ import java.rmi.RemoteException;
 
 public interface ICustomerView extends Remote {
 
-	void show() throws RemoteException;
+	void show(String message) throws RemoteException;
 }

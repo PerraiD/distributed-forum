@@ -1,15 +1,17 @@
 package org.alma.distributedforum.server;
 
+import org.alma.distributedforum.client.ICustomerView;
+
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 
 public interface ISubject extends Remote {
 
-	boolean broadcast() throws RemoteException;
+	boolean subscription(ICustomerView view) throws RemoteException;
 
-	boolean subscription() throws RemoteException;
+	boolean unsubscribe (ICustomerView view) throws RemoteException;
 
-	boolean unsubscribe () throws RemoteException;
+	void putMessage(String message) throws RemoteException;
 
 	String getName() throws RemoteException;
 

@@ -1,10 +1,14 @@
 package org.alma.distributedforum.server;
 
+import org.alma.distributedforum.client.ICustomerView;
+
 import java.io.Serializable;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 public class Subject extends UnicastRemoteObject implements ISubject,Serializable {
 	
@@ -15,35 +19,47 @@ public class Subject extends UnicastRemoteObject implements ISubject,Serializabl
 	private String name;
 	private List<String> history;
 
+	private Set<ICustomerView> viewers;
 
 	public Subject(String name) throws RemoteException {
-    super(10000);
+		super(10000);
 
-    this.name = name;
-		this.history= new ArrayList<String>();
+		this.name = name;
+		history = new ArrayList<String>();
+		viewers = new LinkedHashSet<ICustomerView>();
+	}
+
+	public void broadcast(String message) {
+		// TODO Auto-generated method stub
+		System.out.println("broadcast");
+		for (ICustomerView view : viewers) {
+			try {
+				view.show(message);
+			} catch (RemoteException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 	@Override
-	public boolean broadcast() throws RemoteException {
+	public boolean subscription(ICustomerView view) throws RemoteException {
 		// TODO Auto-generated method stub
-		return false;
+		System.out.println("Subcribe");
+		return viewers.add(view);
 	}
 
 	@Override
-	public boolean subscription() throws RemoteException {
+	public boolean unsubscribe(ICustomerView view) throws RemoteException {
 		// TODO Auto-generated method stub
-		return false;
+		System.out.println("UnSubcribe");
+		return viewers.remove(view);
 	}
 
 	@Override
-	public boolean unsubscribe() throws RemoteException {
-		// TODO Auto-generated method stub
-		return false;
-	}
-	
-	
 	public void putMessage(String message) throws RemoteException {
-		this.history.add(message);
+		System.out.println("receive message : " + message);
+		history.add(message);
+		broadcast(message);
 	}
 	
 	public List<String> getLastMessages(int n) {

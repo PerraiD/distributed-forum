@@ -7,11 +7,11 @@ import java.rmi.server.UnicastRemoteObject;
 public class CustomerView extends UnicastRemoteObject implements ICustomerView,Serializable {
 
 	protected CustomerView() throws RemoteException {
-		super();
+		super(11000);
 		// TODO Auto-generated constructor stub
 	}
 
-	public void show() throws RemoteException {
-		
+	public void show(String message) throws RemoteException {
+		System.out.println(message);
 	}
 }
