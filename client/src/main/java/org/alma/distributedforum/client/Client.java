@@ -2,7 +2,6 @@ package org.alma.distributedforum.client;
 
 import org.alma.distributedforum.server.IForumServer;
 
-import java.rmi.RMISecurityManager;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 
@@ -14,9 +13,9 @@ import java.rmi.registry.Registry;
 public class Client {
 
   public static void main(String[] args) {
-    if (System.getSecurityManager() == null) {
-      System.setSecurityManager(new RMISecurityManager());
-    }
+//    if (System.getSecurityManager() == null) {
+//      System.setSecurityManager(new RMISecurityManager());
+//    }
 
     try {
       Registry registry = LocateRegistry.getRegistry(10000);
