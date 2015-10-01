@@ -5,7 +5,6 @@ import org.alma.distributedforum.server.ISubject;
 
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
-import java.rmi.server.UnicastRemoteObject;
 
 /**
  * Created on 9/29/15.
@@ -23,17 +22,15 @@ public class Client {
       Registry registry = LocateRegistry.getRegistry(10000);
       IForumServer forumServer = (IForumServer) registry.lookup("forum");
 
-      ICustomerView myView = new CustomerView();
       ISubject subject = forumServer.getSubject("Art");
-      subject.subscribe(myView);
 
-      subject.sendMessage("Hello");
+      CustomerView myView = new CustomerView(subject);
 
-      subject.unsubscribe(myView);
+      myView.writeMessage("Hello");
 
-      subject.sendMessage("wold!");
+      myView.unsubscribe();
 
-      UnicastRemoteObject.unexportObject(myView, true);
+      myView.writeMessage("wold!");
 
     } catch (Exception e) {
       e.printStackTrace();
