@@ -6,7 +6,10 @@ import java.io.Serializable;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -26,7 +29,7 @@ public class Subject extends UnicastRemoteObject implements ISubject,Serializabl
 
 		this.name = name;
 		history = new ArrayList<String>();
-		viewers = new LinkedHashSet<ICustomerView>();
+		viewers = Collections.synchronizedSet(new LinkedHashSet<ICustomerView>());
 	}
 
 	/**
@@ -37,19 +40,22 @@ public class Subject extends UnicastRemoteObject implements ISubject,Serializabl
 	public void broadcast(String message) {
 		// TODO Auto-generated method stub
 		System.out.println("broadcast");
+		Collection<ICustomerView> oldViewer = new LinkedList<ICustomerView>();
 		for (ICustomerView view : viewers) {
 			try {
 				view.show(message);
 			} catch (RemoteException e) {
-				e.printStackTrace();
+				oldViewer.add(view);
 			}
 		}
+
+		viewers.removeAll(oldViewer);
 	}
 
 	@Override
 	public boolean subscribe(ICustomerView view) throws RemoteException {
 		// TODO Auto-generated method stub
-		System.out.println("Subcribe");
+		System.out.println("Subscribe");
 		return viewers.add(view);
 	}
 
