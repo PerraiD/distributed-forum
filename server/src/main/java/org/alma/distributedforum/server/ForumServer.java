@@ -48,7 +48,7 @@ public class ForumServer extends UnicastRemoteObject implements IForumServer {
 	}
 
 	@Override
-	public List<ISubject> ListSubject() {
+	public List<ISubject> listSubject() {
 		return subjectList;
 	}
 

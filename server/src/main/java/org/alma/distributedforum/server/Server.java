@@ -13,10 +13,6 @@ public class Server {
     try {
       Registry registry = LocateRegistry.createRegistry(10000);
 
-//      if (System.getSecurityManager() == null) {
-//        System.setSecurityManager(new RMISecurityManager());
-//      }
-
       IForumServer forum = new ForumServer();
       registry.rebind("forum",forum);
 

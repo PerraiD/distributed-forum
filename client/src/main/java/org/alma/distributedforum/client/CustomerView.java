@@ -3,16 +3,18 @@ package org.alma.distributedforum.client;
 import org.alma.distributedforum.server.ISubject;
 
 import java.io.Serializable;
+import java.io.ObjectInputStream.GetField;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 
 public class CustomerView extends UnicastRemoteObject implements ICustomerView,Serializable {
 
 	private ISubject subject;
+	private ViewForum viewforum;
 
-	protected CustomerView(ISubject subject) throws RemoteException {
+	public CustomerView(ISubject subject, ViewForum viewForum) throws RemoteException {
 		super();
-
+		this.viewforum= viewForum;
 		this.subject = subject;
 
 		init();
@@ -27,7 +29,7 @@ public class CustomerView extends UnicastRemoteObject implements ICustomerView,S
 	}
 
 	public void show(String message) throws RemoteException {
-		System.out.println(message);
+		viewforum.appendMessage(message);
 	}
 
 
@@ -51,4 +53,9 @@ public class CustomerView extends UnicastRemoteObject implements ICustomerView,S
 			e.printStackTrace();
 		}
 	}
+
+	public ISubject getSubject() {
+		return subject;
+	}
+	
 }

@@ -30,8 +30,8 @@ public interface IForumServer extends Remote {
 	 * @return all subject
 	 * @throws RemoteException
 	 */
-	List<ISubject> ListSubject() throws RemoteException;
-
+	List<ISubject> listSubject() throws RemoteException;
+	
 	/**
 	 * Create new subject on forum server
 	 *
