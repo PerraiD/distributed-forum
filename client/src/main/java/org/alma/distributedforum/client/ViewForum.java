@@ -6,6 +6,7 @@ import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.rmi.RemoteException;
+import java.util.Collection;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -66,6 +67,9 @@ public class ViewForum {
 		
 		text = new JTextArea();
 		text.setEditable(false);
+		
+		customer.getHistory();
+		
 		scroll = new JScrollPane(text);
 		scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		/*adding the textArea to the panel  with layout constraint*/		
@@ -123,6 +127,7 @@ public class ViewForum {
 		
 		text.setText(text.getText()+"\n"+message);
 	    text.repaint();
+	    
 	}
 
 

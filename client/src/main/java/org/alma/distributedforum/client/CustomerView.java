@@ -6,6 +6,7 @@ import java.io.Serializable;
 import java.io.ObjectInputStream.GetField;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.List;
 
 public class CustomerView extends UnicastRemoteObject implements ICustomerView,Serializable {
 
@@ -56,6 +57,19 @@ public class CustomerView extends UnicastRemoteObject implements ICustomerView,S
 
 	public ISubject getSubject() {
 		return subject;
+	}
+	
+	public void getHistory() {
+		List<String> history;
+		try {
+			history = subject.getHistory();
+
+			for (String msg : history) {
+				show(msg);
+			}
+		} catch (RemoteException e) {
+			e.printStackTrace();
+		}
 	}
 	
 }

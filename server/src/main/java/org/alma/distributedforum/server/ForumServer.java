@@ -30,19 +30,20 @@ public class ForumServer extends UnicastRemoteObject implements IForumServer {
 	 * @param name name of subject
 	 * @return subject found
 	 * @throws SubjectNotFound if no subject have good name
+	 * @throws RemoteException 
 	 */
-	private ISubject findSubject(String name) throws SubjectNotFound {
+	private ISubject findSubject(String name) throws SubjectNotFound, RemoteException {
 		for(ISubject s : subjectList){
-			if(((Subject)s).getName().equals(name)){
+			if(s.getName().equals(name)){
 				return s;
-			}
+			}	
 		}
 
 		throw new SubjectNotFound("Subject : " + name +  " not found");
 	}
 
 	@Override
-	public ISubject getSubject(String name) throws SubjectNotFound {
+	public ISubject getSubject(String name) throws SubjectNotFound, RemoteException {
 
 		return findSubject(name);
 	}

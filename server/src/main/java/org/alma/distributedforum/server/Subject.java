@@ -89,13 +89,11 @@ public class Subject extends UnicastRemoteObject implements ISubject,Serializabl
 		
 	}
 	
+	@Override
 	public List<String> getHistory() {
 		return history;
 	}
 
-	public void setHistory(List<String> history) {
-		this.history = history;
-	}
 
 	@Override
 	public String getName() {

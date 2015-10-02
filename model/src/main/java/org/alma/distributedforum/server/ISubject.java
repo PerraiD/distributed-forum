@@ -4,6 +4,7 @@ import org.alma.distributedforum.client.ICustomerView;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
+import java.util.List;
 
 /**
  * Subject of forum server
@@ -44,5 +45,12 @@ public interface ISubject extends Remote {
 	 * @throws RemoteException
 	 */
 	String getName() throws RemoteException;
+	
+	/**
+	 * Get list of the history of subject message
+	 * @throws RemoteException
+	 * @return list of message
+	 */
+	List<String> getHistory() throws RemoteException;
 
 }
