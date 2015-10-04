@@ -1,5 +1,6 @@
 package org.alma.distributedforum.server;
 
+import java.net.InetAddress;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 
@@ -11,12 +12,13 @@ import java.rmi.registry.Registry;
 public class Server {
   public static void main(String[] args) {
     try {
-      Registry registry = LocateRegistry.createRegistry(10000);
+      Registry registry = LocateRegistry.createRegistry(IForumServer.SERVER_PORT);
 
       IForumServer forum = new ForumServer();
-      registry.rebind("forum",forum);
+      String hostName = InetAddress.getLocalHost().getHostName();
+      registry.rebind(hostName,forum);
 
-      System.out.println("Server started");
+      System.out.println("Server started : " + hostName);
 
     } catch (Exception e) {
       e.printStackTrace();

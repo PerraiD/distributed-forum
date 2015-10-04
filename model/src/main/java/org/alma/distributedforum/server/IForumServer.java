@@ -15,6 +15,11 @@ import java.util.List;
 public interface IForumServer extends Remote {
 
 	/**
+	 * Server port for network discover
+	 */
+	int SERVER_PORT = 10000;
+
+	/**
 	 * Search on forum server the subject on name theme
 	 *
 	 * @param name name of subject
@@ -22,7 +27,8 @@ public interface IForumServer extends Remote {
 	 * @throws SubjectNotFound if no subject found
 	 * @throws RemoteException
 	 */
-	ISubject getSubject(String name) throws RemoteException, SubjectNotFound;
+	ISubject getSubject(String name)
+			throws RemoteException, SubjectNotFound;
 
 	/**
 	 * List all subject create on the forum server
@@ -30,7 +36,8 @@ public interface IForumServer extends Remote {
 	 * @return all subject
 	 * @throws RemoteException
 	 */
-	List<ISubject> listSubject() throws RemoteException;
+	List<ISubject> listSubject()
+			throws RemoteException;
 	
 	/**
 	 * Create new subject on forum server
@@ -40,6 +47,6 @@ public interface IForumServer extends Remote {
 	 * @throws RemoteException
 	 * @throws SubjectAlreadyExist
 	 */
-	ISubject createSubject(String name) throws RemoteException, SubjectAlreadyExist;
-
+	ISubject createSubject(String name)
+			throws RemoteException, SubjectAlreadyExist;
 }
