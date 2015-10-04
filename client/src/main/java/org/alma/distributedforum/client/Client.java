@@ -43,7 +43,7 @@ public class Client {
     dialogPanel.add(label_serverName);
 
 
-    final JTextField input_serverName = new JTextField();
+    final JTextField input_serverName = new JTextField(15);
     dialogPanel.add(input_serverName);
 
     JButton dialogValid = new JButton("Connect");
