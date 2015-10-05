@@ -7,7 +7,6 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -24,12 +23,13 @@ public class Subject extends UnicastRemoteObject implements ISubject,Serializabl
 
 	private Set<ICustomerView> viewers;
 
-	public Subject(String name) throws RemoteException {
-		super(10000);
+	public Subject(String name)
+			throws RemoteException {
+		super(ISubject.SERVER_PORT);
 
 		this.name = name;
-		history = new ArrayList<String>();
-		viewers = Collections.synchronizedSet(new LinkedHashSet<ICustomerView>());
+		history = new ArrayList<>();
+		viewers = new LinkedHashSet<>();
 	}
 
 	/**
@@ -38,9 +38,8 @@ public class Subject extends UnicastRemoteObject implements ISubject,Serializabl
 	 * @param message message sent
 	 */
 	public void broadcast(String message) {
-		// TODO Auto-generated method stub
 		System.out.println("broadcast");
-		Collection<ICustomerView> oldViewer = new LinkedList<ICustomerView>();
+		Collection<ICustomerView> oldViewer = new LinkedList<>();
 		for (ICustomerView view : viewers) {
 			try {
 				view.show(message);
@@ -53,42 +52,27 @@ public class Subject extends UnicastRemoteObject implements ISubject,Serializabl
 	}
 
 	@Override
-	public boolean subscribe(ICustomerView view) throws RemoteException {
-		// TODO Auto-generated method stub
+	public boolean subscribe(ICustomerView view)
+			throws RemoteException {
 		System.out.println("Subscribe");
 		return viewers.add(view);
 	}
 
 	@Override
-	public boolean unsubscribe(ICustomerView view) throws RemoteException {
-		// TODO Auto-generated method stub
+	public boolean unsubscribe(ICustomerView view)
+			throws RemoteException {
 		System.out.println("UnSubcribe");
 		return viewers.remove(view);
 	}
 
 	@Override
-	public void sendMessage(String message) throws RemoteException {
+	public void sendMessage(String message)
+			throws RemoteException {
 		System.out.println("receive message : " + message);
 		history.add(message);
 		broadcast(message);
 	}
-	
-	public List<String> getLastMessages(int n) {
-		
-		List<String> messages = new ArrayList<String>();
-		
-		if (n <= history.size()) {
-			for (String aHistory : history) {
-				messages.add(aHistory);
-			}
-		} else {
-			return history;
-		}
-		
-		return messages;
-		
-	}
-	
+
 	@Override
 	public List<String> getHistory() {
 		return history;

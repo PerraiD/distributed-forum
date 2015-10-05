@@ -12,5 +12,6 @@ public interface ICustomerView extends Remote {
 	 * @param message new message
 	 * @throws RemoteException
 	 */
-	void show(String message) throws RemoteException;
+	void show(String message)
+			throws RemoteException;
 }

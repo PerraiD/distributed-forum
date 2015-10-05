@@ -14,13 +14,19 @@ import java.util.List;
 public interface ISubject extends Remote {
 
 	/**
+	 * Server port for network discover
+	 */
+	int SERVER_PORT = 11000;
+
+	/**
 	 * Subscribe a client view to one subject
 	 *
 	 * @param view client view
 	 * @return true if the subscription is successful
 	 * @throws RemoteException
 	 */
-	boolean subscribe(ICustomerView view) throws RemoteException;
+	boolean subscribe(ICustomerView view)
+			throws RemoteException;
 
 	/**
 	 * Unsubscribe a client view to one subject
@@ -29,7 +35,8 @@ public interface ISubject extends Remote {
 	 * @return true if the unsubscription is successful
 	 * @throws RemoteException
 	 */
-	boolean unsubscribe(ICustomerView view) throws RemoteException;
+	boolean unsubscribe(ICustomerView view)
+			throws RemoteException;
 
 	/**
 	 * Send a message to all listener of the subject
@@ -37,20 +44,23 @@ public interface ISubject extends Remote {
 	 * @param message the message
 	 * @throws RemoteException
 	 */
-	void sendMessage(String message) throws RemoteException;
+	void sendMessage(String message)
+			throws RemoteException;
 
 	/**
 	 * Get name of subject
 	 * @return name of subject
 	 * @throws RemoteException
 	 */
-	String getName() throws RemoteException;
+	String getName()
+			throws RemoteException;
 	
 	/**
 	 * Get list of the history of subject message
 	 * @throws RemoteException
 	 * @return list of message
 	 */
-	List<String> getHistory() throws RemoteException;
+	List<String> getHistory()
+			throws RemoteException;
 
 }

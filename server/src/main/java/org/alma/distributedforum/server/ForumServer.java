@@ -12,8 +12,9 @@ public class ForumServer extends UnicastRemoteObject implements IForumServer {
 
 	private List<ISubject> subjectList;
 
-	protected ForumServer() throws RemoteException {
-		super(10000);
+	protected ForumServer()
+			throws RemoteException {
+		super(IForumServer.SERVER_PORT);
 
 		subjectList= new ArrayList<ISubject>();
 
@@ -32,7 +33,8 @@ public class ForumServer extends UnicastRemoteObject implements IForumServer {
 	 * @throws SubjectNotFound if no subject have good name
 	 * @throws RemoteException 
 	 */
-	private ISubject findSubject(String name) throws SubjectNotFound, RemoteException {
+	private ISubject findSubject(String name)
+			throws SubjectNotFound, RemoteException {
 		for(ISubject s : subjectList){
 			if(s.getName().equals(name)){
 				return s;
@@ -43,7 +45,8 @@ public class ForumServer extends UnicastRemoteObject implements IForumServer {
 	}
 
 	@Override
-	public ISubject getSubject(String name) throws SubjectNotFound, RemoteException {
+	public ISubject getSubject(String name)
+			throws SubjectNotFound, RemoteException {
 
 		return findSubject(name);
 	}
@@ -54,7 +57,8 @@ public class ForumServer extends UnicastRemoteObject implements IForumServer {
 	}
 
 	@Override
-	public ISubject createSubject(String name) throws RemoteException, SubjectAlreadyExist {
+	public ISubject createSubject(String name)
+			throws RemoteException, SubjectAlreadyExist {
 		ISubject newSubject;
 
 		try {
