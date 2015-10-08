@@ -1,34 +1,20 @@
 package org.alma.distributedforum.client;
 
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.HeadlessException;
+import org.alma.distributedforum.server.ISubject;
+
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.rmi.RemoteException;
-import java.util.Collection;
-
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
-import javax.swing.ScrollPaneConstants;
-
-import org.alma.distributedforum.server.ISubject;
 
 public class ViewForum {
 	private CustomerView customer;
 	private ForumCustomer forumCustomer;
-	
-	private JFrame window;
-	private JPanel panel;
+
 	private JTextArea text;
-	private JScrollPane scroll;
 	private JTextField textEnter;
-	private JButton sendBtn;
-	
+
 	public ViewForum(ISubject subjectObj,ForumCustomer fc)  {
 		try {
 			forumCustomer = fc;
@@ -41,12 +27,12 @@ public class ViewForum {
 	public void showForum() throws HeadlessException, RemoteException{
 		
 		/* definition of the window. */
-		window = new JFrame(customer.getSubject().getName());
+		JFrame window = new JFrame(customer.getSubject().getName());
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		window.setSize(800, 500);
 		window.setLocationRelativeTo(null);
-		
-		panel = new JPanel();	
+
+		JPanel panel = new JPanel();
 		panel.setLayout(new GridBagLayout());
 		
 		GridBagConstraints gc = new GridBagConstraints();
@@ -69,8 +55,8 @@ public class ViewForum {
 		text.setEditable(false);
 		
 		customer.getHistory();
-		
-		scroll = new JScrollPane(text);
+
+		JScrollPane scroll = new JScrollPane(text);
 		scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		/*adding the textArea to the panel  with layout constraint*/		
 		panel.add(scroll, gc);
@@ -101,18 +87,16 @@ public class ViewForum {
 		gc.gridx = 0;
 		gc.gridy = 3;
 		gc.gridwidth = 0;
-		sendBtn = new JButton("Send");
+		JButton sendBtn = new JButton("Send");
 		
 		/*listener on the sendButton  */
-		sendBtn.addActionListener(new ActionListener()
-		{
-		  public void actionPerformed(ActionEvent e)
-		  {	  
-			  String value= forumCustomer.getNom()+" : "+textEnter.getText();
-			  textEnter.setText("");
-			  //broadcasting of the new message to the forum serveur.
-			  customer.writeMessage(value);
-		  }
+		sendBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String value = forumCustomer.getNom() + " : " + textEnter.getText();
+				textEnter.setText("");
+				//broadcasting of the new message to the forum serveur.
+				customer.writeMessage(value);
+			}
 		});
 		
 		/*adding the button to the panel*/

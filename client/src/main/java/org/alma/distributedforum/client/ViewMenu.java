@@ -10,27 +10,16 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.rmi.RemoteException;
-import java.util.ArrayList;
 import java.util.List;
 
 public class ViewMenu {
 
 	private JFrame window;
-	private JButton sendBtn;
-	private JButton createSubBtn;
-	private JTextArea text;
-	private JTextField textEnter;
-	private JPanel panel;
-	private JScrollPane scroll;
-	private List<String> subjectUser;
 	private IForumServer forumServer;
 	private JComboBox<String> subjectComboB;
-	private JLabel createSubLabel;
 
 	public  ViewMenu(IForumServer forumServer) {
-		this.subjectUser = new ArrayList<String>();
 		this.forumServer=forumServer;
-
 	}
 
 	public void showMenu() throws RemoteException {
@@ -47,8 +36,7 @@ public class ViewMenu {
 		window.setSize(300, 250);
 		window.setLocationRelativeTo(null);
 
-
-		panel = new JPanel();
+		JPanel panel = new JPanel();
 		panel.setLayout(new GridBagLayout());
 
 		GridBagConstraints gc = new GridBagConstraints();
@@ -108,38 +96,35 @@ public class ViewMenu {
 		gc.gridx = 0;
 		gc.gridy = 2;
 		gc.gridwidth = 1;
-		createSubLabel = new JLabel("Or create one : ");
+		JLabel createSubLabel = new JLabel("Or create one : ");
 		panel.add(createSubLabel, gc);
 
 		gc.gridx = 1;
 		gc.gridy = 2;
 		gc.gridwidth = 1;
-		createSubBtn = new JButton("create subject");
+		JButton createSubBtn = new JButton("create subject");
 
-		createSubBtn.addActionListener(new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				try{
-					if(!textEnter.getText().isEmpty()){
+		createSubBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					if ( !textEnter.getText().isEmpty() ) {
 						JPanel diagPan = new JPanel(new FlowLayout(FlowLayout.CENTER));
-						final JDialog createSubDial= new JDialog(window);
-						final JTextField newSubName= new JTextField("Enter subject name");
+						final JDialog createSubDial = new JDialog(window);
+						final JTextField newSubName = new JTextField("Enter subject name");
 
 						JButton createSub = new JButton("create");
 
 
-						createSub.addActionListener(new ActionListener(){
-							public void actionPerformed(ActionEvent e)
-							{
-								if(!newSubName.getText().isEmpty() && !newSubName.getText().equals("Enter subject name")){
+						createSub.addActionListener(new ActionListener() {
+							public void actionPerformed(ActionEvent e) {
+								if ( !newSubName.getText().isEmpty() && !newSubName.getText().equals("Enter subject name") ) {
 									try {
 										ISubject subjectObj = forumServer.createSubject(newSubName.getText());
 										ForumCustomer fc = new ForumCustomer(textEnter.getText());
-										ViewForum vf = new ViewForum(subjectObj,fc);
+										ViewForum vf = new ViewForum(subjectObj, fc);
 										vf.showForum();
 
-										window.setVisible(false);
+										//window.setVisible(false);
 										createSubDial.setVisible(false);
 									} catch (RemoteException | SubjectAlreadyExist e1) {
 										e1.printStackTrace();
@@ -157,7 +142,8 @@ public class ViewMenu {
 						createSubDial.setSize(200, 100);
 						createSubDial.setVisible(true);
 					}
-				} catch(Exception ignored){	}
+				} catch (Exception ignored) {
+				}
 			}
 		});
 
@@ -167,25 +153,23 @@ public class ViewMenu {
 		gc.gridx = 0;
 		gc.gridy = 3;
 		gc.gridwidth = 0;
-		sendBtn = new JButton("Connect to the discution !");
+		JButton sendBtn = new JButton("Connect to the discution !");
 
 		/*listener on the sendButton */
-		sendBtn.addActionListener(new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				try{
+		sendBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
 					String userName = textEnter.getText();
-					if(!userName.isEmpty()){
+					if ( !userName.isEmpty() ) {
 						String subject = subjectComboB.getSelectedItem()
 								.toString();
-						window.setVisible(false);
+						//window.setVisible(false);
 						ISubject subjectObj = forumServer.getSubject(subject);
 						ForumCustomer fc = new ForumCustomer(userName);
-						ViewForum vf = new ViewForum(subjectObj,fc);
+						ViewForum vf = new ViewForum(subjectObj, fc);
 						vf.showForum();
 					}
-				} catch(RemoteException | SubjectNotFound re){
+				} catch (RemoteException | SubjectNotFound re) {
 					re.printStackTrace();
 				}
 			}

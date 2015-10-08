@@ -16,7 +16,7 @@ public class ForumServer extends UnicastRemoteObject implements IForumServer {
 			throws RemoteException {
 		super(IForumServer.SERVER_PORT);
 
-		subjectList= new ArrayList<ISubject>();
+		subjectList= new ArrayList<>();
 
 		/** some subjectList for the moment**/
 
