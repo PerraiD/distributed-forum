@@ -6,7 +6,10 @@ package org.alma.distributedforum.server.exception;
  * @author dralagen
  */
 public class SubjectNotFound extends Exception {
-    public SubjectNotFound(String s) {
-        super(s);
-    }
+
+	private static final long serialVersionUID = 508993642696482619L;
+
+	public SubjectNotFound(String s) {
+		super(s);
+	}
 }

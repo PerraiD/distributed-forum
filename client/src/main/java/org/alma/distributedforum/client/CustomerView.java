@@ -1,21 +1,24 @@
 package org.alma.distributedforum.client;
 
-import org.alma.distributedforum.server.ISubject;
-
 import java.io.Serializable;
-import java.io.ObjectInputStream.GetField;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.List;
 
-public class CustomerView extends UnicastRemoteObject implements ICustomerView,Serializable {
+import org.alma.distributedforum.server.ISubject;
+
+public class CustomerView extends UnicastRemoteObject
+        implements ICustomerView, Serializable {
+
+	private static final long serialVersionUID = 7314939361682470120L;
 
 	private ISubject subject;
 	private ViewForum viewforum;
 
-	public CustomerView(ISubject subject, ViewForum viewForum) throws RemoteException {
+	public CustomerView(ISubject subject, ViewForum viewForum)
+	        throws RemoteException {
 		super();
-		this.viewforum= viewForum;
+		viewforum = viewForum;
 		this.subject = subject;
 
 		init();
@@ -29,10 +32,10 @@ public class CustomerView extends UnicastRemoteObject implements ICustomerView,S
 		}
 	}
 
+	@Override
 	public void show(String message) throws RemoteException {
 		viewforum.appendMessage(message);
 	}
-
 
 	public void unsubscribe() {
 		try {
@@ -58,7 +61,7 @@ public class CustomerView extends UnicastRemoteObject implements ICustomerView,S
 	public ISubject getSubject() {
 		return subject;
 	}
-	
+
 	public void getHistory() {
 		List<String> history;
 		try {
@@ -71,5 +74,5 @@ public class CustomerView extends UnicastRemoteObject implements ICustomerView,S
 			e.printStackTrace();
 		}
 	}
-	
+
 }
