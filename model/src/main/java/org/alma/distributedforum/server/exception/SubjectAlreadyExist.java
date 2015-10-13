@@ -9,17 +9,20 @@ import org.alma.distributedforum.server.ISubject;
  */
 public class SubjectAlreadyExist extends Exception {
 
-    private ISubject existingSubject;
+	private static final long serialVersionUID = -8423837550054501570L;
 
-    public SubjectAlreadyExist(ISubject subject) {
-        this.existingSubject = subject;
-    }
+	private ISubject existingSubject;
 
-    /**
-     * Get the existing subject on forum server
-     * @return the existing subject
-     */
-    public ISubject getExistingSubject() {
-        return existingSubject;
-    }
+	public SubjectAlreadyExist(ISubject subject) {
+		existingSubject = subject;
+	}
+
+	/**
+	 * Get the existing subject on forum server
+	 * 
+	 * @return the existing subject
+	 */
+	public ISubject getExistingSubject() {
+		return existingSubject;
+	}
 }
