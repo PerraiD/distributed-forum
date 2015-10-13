@@ -4,6 +4,7 @@ import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.List;
 
+import org.alma.distributedforum.client.ICustomerForum;
 import org.alma.distributedforum.server.exception.SubjectAlreadyExist;
 import org.alma.distributedforum.server.exception.SubjectNotFound;
 import org.alma.distributedforum.server.exception.SubscribeListeningException;
@@ -38,7 +39,7 @@ public interface IForumServer extends Remote {
 	 * @return all subject
 	 * @throws RemoteException
 	 */
-	List<ISubject> listSubject() throws RemoteException;
+	List<ISubject> listSubject(ICustomerForum client) throws RemoteException;
 
 	/**
 	 * Create new subject on forum server
@@ -67,4 +68,5 @@ public interface IForumServer extends Remote {
 	 */
 	boolean deleteSuject(String name) throws RemoteException,
 	        SubscribeListeningException, SubjectNotFound;
+
 }

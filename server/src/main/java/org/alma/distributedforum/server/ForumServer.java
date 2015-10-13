@@ -3,8 +3,13 @@ package org.alma.distributedforum.server;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
+import org.alma.distributedforum.client.ICustomerForum;
 import org.alma.distributedforum.server.exception.SubjectAlreadyExist;
 import org.alma.distributedforum.server.exception.SubjectNotFound;
 import org.alma.distributedforum.server.exception.SubscribeListeningException;
@@ -14,11 +19,14 @@ public class ForumServer extends UnicastRemoteObject implements IForumServer {
 	private static final long serialVersionUID = 41305478188360920L;
 
 	private List<ISubject> subjectList;
+	private Set<ICustomerForum> clientList;
 
 	protected ForumServer() throws RemoteException {
 		super(IForumServer.SERVER_PORT);
 
-		subjectList = new ArrayList<>();
+		subjectList = Collections.synchronizedList(new ArrayList<ISubject>());
+		clientList = Collections
+		        .synchronizedSet(new LinkedHashSet<ICustomerForum>());
 
 		/** some subjectList for the moment **/
 
@@ -56,7 +64,8 @@ public class ForumServer extends UnicastRemoteObject implements IForumServer {
 	}
 
 	@Override
-	public List<ISubject> listSubject() {
+	public List<ISubject> listSubject(ICustomerForum client) {
+		clientList.add(client);
 		return subjectList;
 	}
 
@@ -73,7 +82,22 @@ public class ForumServer extends UnicastRemoteObject implements IForumServer {
 			subjectList.add(newSubject);
 		}
 
+		notifyClient(newSubject);
+
 		return newSubject;
+	}
+
+	private void notifyClient(ISubject newSubject) {
+		List<ICustomerForum> oldClient = new LinkedList<>();
+		for (ICustomerForum client : clientList) {
+			try {
+				client.newSubject(newSubject);
+			} catch (RemoteException e) {
+				oldClient.add(client);
+			}
+		}
+
+		clientList.removeAll(oldClient);
 	}
 
 	@Override

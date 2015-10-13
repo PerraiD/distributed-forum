@@ -25,15 +25,21 @@ public class ViewMenu {
 
 	private JFrame window;
 	private IForumServer forumServer;
+	private ICustomerForum custumerForum;
 	private JComboBox<String> subjectComboB;
 
 	public ViewMenu(IForumServer forumServer) {
 		this.forumServer = forumServer;
+		try {
+			custumerForum = new CustomerForum(this);
+		} catch (RemoteException e) {
+			e.printStackTrace();
+		}
 	}
 
 	public void showMenu() throws RemoteException {
 
-		List<ISubject> subjects = forumServer.listSubject();
+		List<ISubject> subjects = forumServer.listSubject(custumerForum);
 		String[] subjectNames = new String[subjects.size()];
 
 		for (int i = 0; i < subjects.size(); i++) {
@@ -190,8 +196,8 @@ public class ViewMenu {
 						ViewForum vf = new ViewForum(subjectObj, fc);
 						vf.showForum();
 					}
-				} catch (RemoteException | SubjectNotFound re) {
-					re.printStackTrace();
+				} catch (RemoteException | SubjectNotFound e1) {
+					e1.printStackTrace();
 				}
 			}
 		});
@@ -200,6 +206,14 @@ public class ViewMenu {
 		panel.add(sendBtn, gc);
 		window.add(panel);
 		window.setVisible(true);
+	}
+
+	public void appendSubject(ISubject subject) {
+		try {
+			subjectComboB.addItem(subject.getName());
+		} catch (RemoteException e) {
+			e.printStackTrace();
+		}
 	}
 
 }
