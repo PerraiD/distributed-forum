@@ -40,9 +40,9 @@ public class ViewMenu {
 
 		subjectComboB = new JComboBox<String>();
 
-		connectServer();
 		try {
 			custumerForum = new CustomerForum(this);
+			connectServer();
 		} catch (RemoteException e) {
 			e.printStackTrace();
 		}
