@@ -200,7 +200,7 @@ public class ViewMenu {
 									final JTextField textEnter,
 									final JDialog createSubDial,
 									final JTextField newSubName)
-											throws RemoteException, SubjectAlreadyExist {
+									throws RemoteException, SubjectAlreadyExist {
 								ISubject subjectObj = forumServer
 										.createSubject(newSubName.getText());
 								ForumCustomer fc = new ForumCustomer(textEnter
@@ -287,11 +287,11 @@ public class ViewMenu {
 						deleteSubject(nameSubject);
 					} catch (RemoteException re) {
 						JOptionPane
-						.showMessageDialog(
-								window,
-								"Someone is still subscribed or the subject is already deleted !",
-								"Delete Error",
-								JOptionPane.ERROR_MESSAGE);
+								.showMessageDialog(
+										window,
+										"the serveur is down, sorry for the inconvenient!",
+										"Delete Error",
+										JOptionPane.ERROR_MESSAGE);
 
 					} catch (SubscribeListeningException sle2) {
 						JOptionPane.showMessageDialog(window,
