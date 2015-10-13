@@ -16,6 +16,7 @@ import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
@@ -27,12 +28,12 @@ import org.alma.distributedforum.server.exception.SubscribeListeningException;
 
 public class ViewMenu {
 
+	private ICustomerForum custumerForum;
+	private IForumServer forumServer;
 	private String host;
 	private String lookup;
-	private JFrame window;
-	private IForumServer forumServer;
-	private ICustomerForum custumerForum;
 	private JComboBox<String> subjectComboB;
+	private JFrame window;
 
 	public ViewMenu(String host, String lookup) {
 		this.host = host;
@@ -48,10 +49,18 @@ public class ViewMenu {
 		}
 	}
 
+	public void appendSubject(ISubject subject) {
+		try {
+			subjectComboB.addItem(subject.getName());
+		} catch (RemoteException e) {
+			e.printStackTrace();
+		}
+	}
+
 	private synchronized void connectServer() {
 		try {
 			Registry reg = LocateRegistry.getRegistry(host,
-			        IForumServer.SERVER_PORT);
+					IForumServer.SERVER_PORT);
 			forumServer = (IForumServer) reg.lookup(lookup);
 
 			subjectComboB.removeAllItems();
@@ -64,6 +73,14 @@ public class ViewMenu {
 			e.printStackTrace();
 		}
 
+	}
+
+	public void removeSubject(ISubject subject) {
+		try {
+			subjectComboB.removeItem(subject.getName());
+		} catch (RemoteException e) {
+			e.printStackTrace();
+		}
 	}
 
 	public void showMenu() throws RemoteException {
@@ -146,11 +163,11 @@ public class ViewMenu {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					if (!textEnter.getText().isEmpty()) {
-						JPanel diagPan = new JPanel(
-		                        new FlowLayout(FlowLayout.CENTER));
+						JPanel diagPan = new JPanel(new FlowLayout(
+								FlowLayout.CENTER));
 						final JDialog createSubDial = new JDialog(window);
 						final JTextField newSubName = new JTextField(
-		                        "Enter subject name");
+								"Enter subject name");
 
 						JButton createSub = new JButton("create");
 
@@ -158,18 +175,18 @@ public class ViewMenu {
 							@Override
 							public void actionPerformed(ActionEvent e) {
 								if (!newSubName.getText().isEmpty()
-		                                && !newSubName.getText()
-		                                        .equals("Enter subject name")) {
+										&& !newSubName.getText().equals(
+												"Enter subject name")) {
 									try {
 										createSubject(textEnter, createSubDial,
-		                                        newSubName);
+												newSubName);
 									} catch (RemoteException e1) {
 										connectServer();
 										try {
 											createSubject(textEnter,
-		                                            createSubDial, newSubName);
+													createSubDial, newSubName);
 										} catch (RemoteException
-		                                        | SubjectAlreadyExist e2) {
+												| SubjectAlreadyExist e2) {
 											e2.printStackTrace();
 										}
 									} catch (SubjectAlreadyExist e1) {
@@ -180,15 +197,14 @@ public class ViewMenu {
 							}
 
 							private void createSubject(
-		                            final JTextField textEnter,
-		                            final JDialog createSubDial,
-		                            final JTextField newSubName)
-		                                    throws RemoteException,
-		                                    SubjectAlreadyExist {
+									final JTextField textEnter,
+									final JDialog createSubDial,
+									final JTextField newSubName)
+											throws RemoteException, SubjectAlreadyExist {
 								ISubject subjectObj = forumServer
-		                                .createSubject(newSubName.getText());
-								ForumCustomer fc = new ForumCustomer(
-		                                textEnter.getText());
+										.createSubject(newSubName.getText());
+								ForumCustomer fc = new ForumCustomer(textEnter
+										.getText());
 								ViewForum vf = new ViewForum(subjectObj, fc);
 								vf.showForum();
 
@@ -240,7 +256,7 @@ public class ViewMenu {
 			}
 
 			private void connectSubject(String userName, String subject)
-		            throws RemoteException, SubjectNotFound {
+					throws RemoteException, SubjectNotFound {
 				// window.setVisible(false);
 				ISubject subjectObj = forumServer.getSubject(subject);
 				ForumCustomer fc = new ForumCustomer(userName);
@@ -269,18 +285,39 @@ public class ViewMenu {
 					connectServer();
 					try {
 						deleteSubject(nameSubject);
-					} catch (RemoteException | SubscribeListeningException
-		                    | SubjectNotFound e2) {
-						e2.printStackTrace();
+					} catch (RemoteException re) {
+						JOptionPane
+						.showMessageDialog(
+								window,
+								"Someone is still subscribed or the subject is already deleted !",
+								"Delete Error",
+								JOptionPane.ERROR_MESSAGE);
+
+					} catch (SubscribeListeningException sle2) {
+						JOptionPane.showMessageDialog(window,
+								"Someone is still subscribed !",
+								"Delete Error", JOptionPane.ERROR_MESSAGE);
+
+					} catch (SubjectNotFound e2) {
+						JOptionPane.showMessageDialog(window,
+								"the subject is already deleted !",
+								"Delete Error", JOptionPane.ERROR_MESSAGE);
 					}
-				} catch (SubjectNotFound | SubscribeListeningException e1) {
-					e1.printStackTrace();
+				} catch (SubjectNotFound snf1) {
+					JOptionPane.showMessageDialog(window,
+							"the subject is already deleted!", "Delete Error",
+							JOptionPane.ERROR_MESSAGE);
+
+				} catch (SubscribeListeningException sle1) {
+					JOptionPane.showMessageDialog(window,
+							"Someone is still subscribed !", "Delete Error",
+							JOptionPane.ERROR_MESSAGE);
 				}
 			}
 
 			private void deleteSubject(String nameSubject)
-		            throws RemoteException, SubscribeListeningException,
-		            SubjectNotFound {
+					throws RemoteException, SubscribeListeningException,
+					SubjectNotFound {
 				forumServer.deleteSuject(nameSubject);
 			}
 		});
@@ -291,21 +328,4 @@ public class ViewMenu {
 		window.add(panel);
 		window.setVisible(true);
 	}
-
-	public void appendSubject(ISubject subject) {
-		try {
-			subjectComboB.addItem(subject.getName());
-		} catch (RemoteException e) {
-			e.printStackTrace();
-		}
-	}
-
-	public void removeSubject(ISubject subject) {
-		try {
-			subjectComboB.removeItem(subject.getName());
-		} catch (RemoteException e) {
-			e.printStackTrace();
-		}
-	}
-
 }
