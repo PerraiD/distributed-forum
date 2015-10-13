@@ -34,7 +34,8 @@ public interface IForumServer extends Remote {
 	ISubject getSubject(String name) throws RemoteException, SubjectNotFound;
 
 	/**
-	 * List all subject create on the forum server
+	 * List all subject create on the forum server, and subscribe client to
+	 * receive new subject event and remove subject event
 	 *
 	 * @return all subject
 	 * @throws RemoteException

@@ -1,9 +1,6 @@
 package org.alma.distributedforum.client;
 
-import org.alma.distributedforum.server.IForumServer;
-
-import javax.swing.*;
-import java.awt.*;
+import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.rmi.ConnectException;
@@ -12,97 +9,82 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.WindowConstants;
+
+import org.alma.distributedforum.server.IForumServer;
+
 /**
  * Created on 9/29/15.
  *
  * @author dralagen
  */
 public class Client {
-  static JDialog dialogSelectServer;
+	static JDialog dialogSelectServer;
 
-  public static void main(String[] args) {
-    try {
+	public static void main(String[] args) {
+		try {
 
-      selectServer( LocateRegistry.getRegistry(IForumServer.SERVER_PORT));
+			selectServer(null);
 
-    } catch (ConnectException e) {
-      inputServer();
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-  }
+		} catch (ConnectException e) {
+			inputServer();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 
-  private static void inputServer() {
-    final JDialog dialogInputServer = new JDialog();
-    dialogInputServer.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+	private static void inputServer() {
+		final JDialog dialogInputServer = new JDialog();
+		dialogInputServer
+		        .setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 
-    JPanel dialogPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+		JPanel dialogPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
 
-    JLabel label_serverName = new JLabel("Server : ");
+		JLabel label_serverName = new JLabel("Server : ");
 
-    dialogPanel.add(label_serverName);
+		dialogPanel.add(label_serverName);
 
+		final JTextField input_serverName = new JTextField(15);
+		dialogPanel.add(input_serverName);
 
-    final JTextField input_serverName = new JTextField(15);
-    dialogPanel.add(input_serverName);
+		JButton dialogValid = new JButton("Connect");
+		dialogValid.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				try {
+					selectServer(input_serverName.getText());
+					dialogInputServer.setVisible(false);
+				} catch (RemoteException | NotBoundException ignore) {
+				}
+			}
+		});
 
-    JButton dialogValid = new JButton("Connect");
-    dialogValid.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        try {
-          selectServer(LocateRegistry.getRegistry(input_serverName.getText(), IForumServer.SERVER_PORT));
-          dialogInputServer.setVisible(false);
-        } catch (RemoteException | NotBoundException ignore) {
-        }
-      }
-    });
+		dialogPanel.add(dialogValid);
 
-    dialogPanel.add(dialogValid);
+		dialogInputServer.add(dialogPanel);
+		dialogInputServer.setSize(400, 55);
+		dialogInputServer.setVisible(true);
+	}
 
-    dialogInputServer.add(dialogPanel);
-    dialogInputServer.setSize(400,55);
-    dialogInputServer.setVisible(true);
-  }
+	private static void selectServer(String host)
+	        throws RemoteException, NotBoundException {
 
-  private static void selectServer(final Registry registry) throws RemoteException, NotBoundException {
-    String[] servers = registry.list();
+		Registry registry = LocateRegistry.getRegistry(host,
+		        IForumServer.SERVER_PORT);
 
-    if (servers.length == 1) {
-      showMenu((IForumServer) registry.lookup(servers[0]));
-    } else {
-      dialogSelectServer = new JDialog();
-      JPanel dialogPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-      final JComboBox<String> allServer = new JComboBox<>(servers);
-      JButton btnSelectServer = new JButton("Select");
+		String[] servers = registry.list();
 
-      btnSelectServer.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          try {
-            IForumServer forumServer = (IForumServer) registry
-                    .lookup((String) allServer.getSelectedItem());
+		showMenu(host, servers[0]);
+	}
 
-            showMenu(forumServer);
-            dialogSelectServer.setVisible(false);
-          } catch (RemoteException | NotBoundException e1) {
-            e1.printStackTrace();
-          }
-        }
-      });
-
-      dialogPanel.add(allServer);
-      dialogPanel.add(btnSelectServer);
-
-      dialogSelectServer.add(dialogPanel);
-      dialogSelectServer.setSize(300,50);
-      dialogSelectServer.setVisible(true);
-
-    }
-  }
-
-  public static void showMenu(IForumServer server) throws RemoteException {
-    ViewMenu vm = new ViewMenu(server);
-    vm.showMenu();
-  }
+	public static void showMenu(String host, String lookup)
+	        throws RemoteException {
+		ViewMenu vm = new ViewMenu(host, lookup);
+		vm.showMenu();
+	}
 }

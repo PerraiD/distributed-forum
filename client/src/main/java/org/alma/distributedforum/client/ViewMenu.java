@@ -5,7 +5,10 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import java.util.List;
 
 import javax.swing.JButton;
@@ -24,13 +27,20 @@ import org.alma.distributedforum.server.exception.SubscribeListeningException;
 
 public class ViewMenu {
 
+	private String host;
+	private String lookup;
 	private JFrame window;
 	private IForumServer forumServer;
 	private ICustomerForum custumerForum;
 	private JComboBox<String> subjectComboB;
 
-	public ViewMenu(IForumServer forumServer) {
-		this.forumServer = forumServer;
+	public ViewMenu(String host, String lookup) {
+		this.host = host;
+		this.lookup = lookup;
+
+		subjectComboB = new JComboBox<String>();
+
+		connectServer();
 		try {
 			custumerForum = new CustomerForum(this);
 		} catch (RemoteException e) {
@@ -38,14 +48,25 @@ public class ViewMenu {
 		}
 	}
 
-	public void showMenu() throws RemoteException {
+	private synchronized void connectServer() {
+		try {
+			Registry reg = LocateRegistry.getRegistry(host,
+			        IForumServer.SERVER_PORT);
+			forumServer = (IForumServer) reg.lookup(lookup);
 
-		List<ISubject> subjects = forumServer.listSubject(custumerForum);
-		String[] subjectNames = new String[subjects.size()];
+			subjectComboB.removeAllItems();
+			List<ISubject> subjects = forumServer.listSubject(custumerForum);
+			for (ISubject subject : subjects) {
+				appendSubject(subject);
+			}
 
-		for (int i = 0; i < subjects.size(); i++) {
-			subjectNames[i] = subjects.get(i).getName();
+		} catch (RemoteException | NotBoundException e) {
+			e.printStackTrace();
 		}
+
+	}
+
+	public void showMenu() throws RemoteException {
 
 		window = new JFrame("Distributed-Forum");
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -106,8 +127,6 @@ public class ViewMenu {
 		gc.gridwidth = 1;
 		gc.gridheight = 1;
 
-		subjectComboB = new JComboBox<String>(subjectNames);
-
 		/* adding the textField to the panel with layout constraint */
 		panel.add(subjectComboB, gc);
 
@@ -142,23 +161,39 @@ public class ViewMenu {
 		                                && !newSubName.getText()
 		                                        .equals("Enter subject name")) {
 									try {
-										ISubject subjectObj = forumServer
-		                                        .createSubject(
-		                                                newSubName.getText());
-										ForumCustomer fc = new ForumCustomer(
-		                                        textEnter.getText());
-										ViewForum vf = new ViewForum(subjectObj,
-		                                        fc);
-										vf.showForum();
-
-										// window.setVisible(false);
-										createSubDial.setVisible(false);
-									} catch (RemoteException
-		                                    | SubjectAlreadyExist e1) {
+										createSubject(textEnter, createSubDial,
+		                                        newSubName);
+									} catch (RemoteException e1) {
+										connectServer();
+										try {
+											createSubject(textEnter,
+		                                            createSubDial, newSubName);
+										} catch (RemoteException
+		                                        | SubjectAlreadyExist e2) {
+											e2.printStackTrace();
+										}
+									} catch (SubjectAlreadyExist e1) {
 										e1.printStackTrace();
 									}
 								}
 
+							}
+
+							private void createSubject(
+		                            final JTextField textEnter,
+		                            final JDialog createSubDial,
+		                            final JTextField newSubName)
+		                                    throws RemoteException,
+		                                    SubjectAlreadyExist {
+								ISubject subjectObj = forumServer
+		                                .createSubject(newSubName.getText());
+								ForumCustomer fc = new ForumCustomer(
+		                                textEnter.getText());
+								ViewForum vf = new ViewForum(subjectObj, fc);
+								vf.showForum();
+
+								// window.setVisible(false);
+								createSubDial.setVisible(false);
 							}
 						});
 
@@ -186,20 +221,31 @@ public class ViewMenu {
 		sendBtn.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				String userName = textEnter.getText();
+				String subject = (String) subjectComboB.getSelectedItem();
 				try {
-					String userName = textEnter.getText();
 					if (!userName.isEmpty()) {
-						String subject = subjectComboB.getSelectedItem()
-		                        .toString();
-						// window.setVisible(false);
-						ISubject subjectObj = forumServer.getSubject(subject);
-						ForumCustomer fc = new ForumCustomer(userName);
-						ViewForum vf = new ViewForum(subjectObj, fc);
-						vf.showForum();
+						connectSubject(userName, subject);
 					}
-				} catch (RemoteException | SubjectNotFound e1) {
+				} catch (RemoteException e1) {
+					connectServer();
+					try {
+						connectSubject(userName, subject);
+					} catch (RemoteException | SubjectNotFound e2) {
+						e2.printStackTrace();
+					}
+				} catch (SubjectNotFound e1) {
 					e1.printStackTrace();
 				}
+			}
+
+			private void connectSubject(String userName, String subject)
+		            throws RemoteException, SubjectNotFound {
+				// window.setVisible(false);
+				ISubject subjectObj = forumServer.getSubject(subject);
+				ForumCustomer fc = new ForumCustomer(userName);
+				ViewForum vf = new ViewForum(subjectObj, fc);
+				vf.showForum();
 			}
 		});
 
@@ -216,13 +262,26 @@ public class ViewMenu {
 		removeSubjectBtn.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				String nameSubject = (String) subjectComboB.getSelectedItem();
 				try {
-					forumServer.deleteSuject(
-		                    (String) subjectComboB.getSelectedItem());
-				} catch (RemoteException | SubjectNotFound
-		                | SubscribeListeningException e1) {
+					deleteSubject(nameSubject);
+				} catch (RemoteException e1) {
+					connectServer();
+					try {
+						deleteSubject(nameSubject);
+					} catch (RemoteException | SubscribeListeningException
+		                    | SubjectNotFound e2) {
+						e2.printStackTrace();
+					}
+				} catch (SubjectNotFound | SubscribeListeningException e1) {
 					e1.printStackTrace();
 				}
+			}
+
+			private void deleteSubject(String nameSubject)
+		            throws RemoteException, SubscribeListeningException,
+		            SubjectNotFound {
+				forumServer.deleteSuject(nameSubject);
 			}
 		});
 
