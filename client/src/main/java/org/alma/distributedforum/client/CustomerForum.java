@@ -23,4 +23,10 @@ public class CustomerForum extends UnicastRemoteObject
 		menu.appendSubject(subject);
 	}
 
+	@Override
+	public void removeSubject(ISubject subject) throws RemoteException {
+		menu.removeSubject(subject);
+
+	}
+
 }

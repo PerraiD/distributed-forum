@@ -20,6 +20,7 @@ import org.alma.distributedforum.server.IForumServer;
 import org.alma.distributedforum.server.ISubject;
 import org.alma.distributedforum.server.exception.SubjectAlreadyExist;
 import org.alma.distributedforum.server.exception.SubjectNotFound;
+import org.alma.distributedforum.server.exception.SubscribeListeningException;
 
 public class ViewMenu {
 
@@ -204,6 +205,30 @@ public class ViewMenu {
 
 		/* adding the button to the panel */
 		panel.add(sendBtn, gc);
+
+		/* layout constraint of the button */
+		gc.gridx = 0;
+		gc.gridy = 4;
+		gc.gridwidth = 0;
+		JButton removeSubjectBtn = new JButton("Remove the discution !");
+
+		/* listener on the sendButton */
+		removeSubjectBtn.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				try {
+					forumServer.deleteSuject(
+		                    (String) subjectComboB.getSelectedItem());
+				} catch (RemoteException | SubjectNotFound
+		                | SubscribeListeningException e1) {
+					e1.printStackTrace();
+				}
+			}
+		});
+
+		/* adding the button to the panel */
+		panel.add(removeSubjectBtn, gc);
+
 		window.add(panel);
 		window.setVisible(true);
 	}
@@ -211,6 +236,14 @@ public class ViewMenu {
 	public void appendSubject(ISubject subject) {
 		try {
 			subjectComboB.addItem(subject.getName());
+		} catch (RemoteException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void removeSubject(ISubject subject) {
+		try {
+			subjectComboB.removeItem(subject.getName());
 		} catch (RemoteException e) {
 			e.printStackTrace();
 		}

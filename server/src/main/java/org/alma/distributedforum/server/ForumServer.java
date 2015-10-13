@@ -18,6 +18,10 @@ public class ForumServer extends UnicastRemoteObject implements IForumServer {
 
 	private static final long serialVersionUID = 41305478188360920L;
 
+	private static enum clientSubjectAction {
+		APPEND, REMOVE
+	};
+
 	private List<ISubject> subjectList;
 	private Set<ICustomerForum> clientList;
 
@@ -82,16 +86,20 @@ public class ForumServer extends UnicastRemoteObject implements IForumServer {
 			subjectList.add(newSubject);
 		}
 
-		notifyClient(newSubject);
+		notifyClient(newSubject, clientSubjectAction.APPEND);
 
 		return newSubject;
 	}
 
-	private void notifyClient(ISubject newSubject) {
+	private void notifyClient(ISubject subject, clientSubjectAction action) {
 		List<ICustomerForum> oldClient = new LinkedList<>();
 		for (ICustomerForum client : clientList) {
 			try {
-				client.newSubject(newSubject);
+				if (action.equals(clientSubjectAction.APPEND)) {
+					client.newSubject(subject);
+				} else if (action.equals(clientSubjectAction.REMOVE)) {
+					client.removeSubject(subject);
+				}
 			} catch (RemoteException e) {
 				oldClient.add(client);
 			}
@@ -108,6 +116,12 @@ public class ForumServer extends UnicastRemoteObject implements IForumServer {
 		if (removeSubject.haveSucribe())
 			throw new SubscribeListeningException();
 
-		return subjectList.remove(removeSubject);
+		boolean result = subjectList.remove(removeSubject);
+
+		if (result) {
+			notifyClient(removeSubject, clientSubjectAction.REMOVE);
+		}
+
+		return result;
 	}
 }

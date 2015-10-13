@@ -8,4 +8,6 @@ import org.alma.distributedforum.server.ISubject;
 public interface ICustomerForum extends Remote {
 
 	public void newSubject(ISubject subject) throws RemoteException;
+
+	public void removeSubject(ISubject subject) throws RemoteException;
 }
