@@ -108,9 +108,15 @@ public class ForumServer extends UnicastRemoteObject implements IForumServer {
 	}
 
 	@Override
-	public boolean deleteSuject(String name) throws RemoteException,
+	public boolean deleteSubject(String name) throws RemoteException,
 	        SubscribeListeningException, SubjectNotFound {
-		Subject removeSubject = (Subject) findSubject(name);
+
+		Subject removeSubject;
+		try {
+			removeSubject = (Subject) findSubject(name);
+		} catch (SubjectNotFound e) {
+			throw new SubjectNotFound("Subject : " + name + " not found or already deleted");
+		}
 
 		if (removeSubject.haveSucribe())
 			throw new SubscribeListeningException();

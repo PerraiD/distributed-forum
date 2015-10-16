@@ -1,13 +1,13 @@
 package org.alma.distributedforum.server;
 
-import java.rmi.Remote;
-import java.rmi.RemoteException;
-import java.util.List;
-
 import org.alma.distributedforum.client.ICustomerForum;
 import org.alma.distributedforum.server.exception.SubjectAlreadyExist;
 import org.alma.distributedforum.server.exception.SubjectNotFound;
 import org.alma.distributedforum.server.exception.SubscribeListeningException;
+
+import java.rmi.Remote;
+import java.rmi.RemoteException;
+import java.util.List;
 
 /**
  * Interface of a distributed forum server
@@ -67,7 +67,7 @@ public interface IForumServer extends Remote {
 	 * @throws SubjectNotFound
 	 *             if subject is not found
 	 */
-	boolean deleteSuject(String name) throws RemoteException,
+	boolean deleteSubject(String name) throws RemoteException,
 	        SubscribeListeningException, SubjectNotFound;
 
 }

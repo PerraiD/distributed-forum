@@ -61,7 +61,12 @@ public class ViewMenu {
 			}
 
 		} catch (RemoteException | NotBoundException e) {
-			e.printStackTrace();
+			JOptionPane
+					.showMessageDialog(
+							window,
+							"the server is down, sorry for the inconvenience!",
+							"Connexion Error",
+							JOptionPane.ERROR_MESSAGE);
 		}
 
 	}
@@ -181,7 +186,7 @@ public class ViewMenu {
 											e2.printStackTrace();
 										}
 									} catch (SubjectAlreadyExist e1) {
-										e1.printStackTrace();
+										errorSubjectExist(e1.getExistingSubject());
 									}
 								}
 
@@ -222,7 +227,7 @@ public class ViewMenu {
 		gc.gridx = 0;
 		gc.gridy = 3;
 		gc.gridwidth = 0;
-		JButton sendBtn = new JButton("Connect to the discution !");
+		JButton sendBtn = new JButton("Connect to the discussion !");
 
 		/* listener on the sendButton */
 		sendBtn.addActionListener(new ActionListener() {
@@ -238,11 +243,13 @@ public class ViewMenu {
 					connectServer();
 					try {
 						connectSubject(userName, subject);
-					} catch (RemoteException | SubjectNotFound e2) {
+					} catch (RemoteException e2) {
 						e2.printStackTrace();
+					} catch (SubjectNotFound e2) {
+						errorSubjectNotFound(e2.getMessage());
 					}
 				} catch (SubjectNotFound e1) {
-					e1.printStackTrace();
+					errorSubjectNotFound(e1.getMessage());
 				}
 			}
 
@@ -263,7 +270,7 @@ public class ViewMenu {
 		gc.gridx = 0;
 		gc.gridy = 4;
 		gc.gridwidth = 0;
-		JButton removeSubjectBtn = new JButton("Remove the discution !");
+		JButton removeSubjectBtn = new JButton("Remove the discussion !");
 
 		/* listener on the sendButton */
 		removeSubjectBtn.addActionListener(new ActionListener() {
@@ -277,27 +284,16 @@ public class ViewMenu {
 					try {
 						deleteSubject(nameSubject);
 					} catch (RemoteException re) {
-						JOptionPane
-								.showMessageDialog(
-										window,
-										"the serveur is down, sorry for the inconvenient!",
-										"Delete Error",
-										JOptionPane.ERROR_MESSAGE);
-
 					} catch (SubscribeListeningException sle2) {
 						JOptionPane.showMessageDialog(window,
 								"Someone is still subscribed !",
 								"Delete Error", JOptionPane.ERROR_MESSAGE);
 
 					} catch (SubjectNotFound e2) {
-						JOptionPane.showMessageDialog(window,
-								"the subject is already deleted !",
-								"Delete Error", JOptionPane.ERROR_MESSAGE);
+						errorSubjectNotFound(e2.getMessage());
 					}
 				} catch (SubjectNotFound snf1) {
-					JOptionPane.showMessageDialog(window,
-							"the subject is already deleted!", "Delete Error",
-							JOptionPane.ERROR_MESSAGE);
+					errorSubjectNotFound(snf1.getMessage());
 
 				} catch (SubscribeListeningException sle1) {
 					JOptionPane.showMessageDialog(window,
@@ -309,7 +305,7 @@ public class ViewMenu {
 			private void deleteSubject(String nameSubject)
 					throws RemoteException, SubscribeListeningException,
 					SubjectNotFound {
-				forumServer.deleteSuject(nameSubject);
+				forumServer.deleteSubject(nameSubject);
 			}
 		});
 
@@ -318,5 +314,21 @@ public class ViewMenu {
 
 		window.add(panel);
 		window.setVisible(true);
+	}
+
+	private void errorSubjectNotFound(String message) {
+		JOptionPane.showMessageDialog(window,
+				message, "Subject Error",
+				JOptionPane.ERROR_MESSAGE);
+	}
+
+	private void errorSubjectExist(ISubject existingSubject) {
+		try {
+			JOptionPane.showMessageDialog(window,
+					"Subject : " + existingSubject.getName() + " already exist", "Subject Error",
+					JOptionPane.ERROR_MESSAGE);
+		} catch (RemoteException e) {
+			e.printStackTrace();
+		}
 	}
 }
