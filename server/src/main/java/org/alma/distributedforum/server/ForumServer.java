@@ -1,32 +1,31 @@
 package org.alma.distributedforum.server;
 
-import java.rmi.RemoteException;
-import java.rmi.server.UnicastRemoteObject;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedHashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
-
 import org.alma.distributedforum.client.ICustomerForum;
 import org.alma.distributedforum.server.exception.SubjectAlreadyExist;
 import org.alma.distributedforum.server.exception.SubjectNotFound;
 import org.alma.distributedforum.server.exception.SubscribeListeningException;
 
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
+import java.util.*;
+
 public class ForumServer extends UnicastRemoteObject implements IForumServer {
 
 	private static final long serialVersionUID = 41305478188360920L;
 
-	private static enum clientSubjectAction {
+	private enum clientSubjectAction {
 		APPEND, REMOVE
-	};
+	}
 
 	private List<ISubject> subjectList;
 	private Set<ICustomerForum> clientList;
 
-	protected ForumServer() throws RemoteException {
-		super(IForumServer.SERVER_PORT);
+	public ForumServer() throws RemoteException {
+		this(IForumServer.SERVER_PORT);
+	}
+
+	public ForumServer(int serverPort) throws RemoteException {
+		super(serverPort);
 
 		subjectList = Collections.synchronizedList(new ArrayList<ISubject>());
 		clientList = Collections

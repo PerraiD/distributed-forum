@@ -1,8 +1,13 @@
 package org.alma.distributedforum.client;
 
-import java.awt.FlowLayout;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
+import org.alma.distributedforum.server.IForumServer;
+import org.alma.distributedforum.server.ISubject;
+import org.alma.distributedforum.server.exception.SubjectAlreadyExist;
+import org.alma.distributedforum.server.exception.SubjectNotFound;
+import org.alma.distributedforum.server.exception.SubscribeListeningException;
+
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.rmi.NotBoundException;
@@ -11,32 +16,19 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.List;
 
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JDialog;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
-
-import org.alma.distributedforum.server.IForumServer;
-import org.alma.distributedforum.server.ISubject;
-import org.alma.distributedforum.server.exception.SubjectAlreadyExist;
-import org.alma.distributedforum.server.exception.SubjectNotFound;
-import org.alma.distributedforum.server.exception.SubscribeListeningException;
-
 public class ViewMenu {
 
 	private ICustomerForum custumerForum;
 	private IForumServer forumServer;
 	private String host;
+	private int port;
 	private String lookup;
 	private JComboBox<String> subjectComboB;
 	private JFrame window;
 
-	public ViewMenu(String host, String lookup) {
+	public ViewMenu(String host, int port, String lookup) {
 		this.host = host;
+		this.port = port;
 		this.lookup = lookup;
 
 		subjectComboB = new JComboBox<String>();
@@ -59,8 +51,7 @@ public class ViewMenu {
 
 	private synchronized void connectServer() {
 		try {
-			Registry reg = LocateRegistry.getRegistry(host,
-					IForumServer.SERVER_PORT);
+			Registry reg = LocateRegistry.getRegistry(host, port);
 			forumServer = (IForumServer) reg.lookup(lookup);
 
 			subjectComboB.removeAllItems();

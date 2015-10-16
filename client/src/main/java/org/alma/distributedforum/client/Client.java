@@ -1,5 +1,8 @@
 package org.alma.distributedforum.client;
 
+import org.alma.distributedforum.server.IForumServer;
+
+import javax.swing.*;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -8,15 +11,6 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
-
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
-import javax.swing.WindowConstants;
-
-import org.alma.distributedforum.server.IForumServer;
 
 /**
  * Created on 9/29/15.
@@ -29,7 +23,7 @@ public class Client {
 	public static void main(String[] args) {
 		try {
 
-			selectServer(null);
+			selectServer(null, IForumServer.SERVER_PORT);
 
 		} catch (ConnectException e) {
 			inputServer();
@@ -52,13 +46,27 @@ public class Client {
 		final JTextField input_serverName = new JTextField(15);
 		dialogPanel.add(input_serverName);
 
+		JLabel label_serverPort = new JLabel("Port : ");
+
+		dialogPanel.add(label_serverPort);
+
+		final JTextField input_serverPort = new JTextField(String.valueOf(IForumServer.SERVER_PORT));
+		dialogPanel.add(input_serverPort);
+
+
 		JButton dialogValid = new JButton("Connect");
 		dialogValid.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				try {
-					selectServer(input_serverName.getText());
+					selectServer(input_serverName.getText(), Integer.parseInt(input_serverPort.getText()));
 					dialogInputServer.setVisible(false);
+				} catch (NumberFormatException e1) {
+					try {
+						selectServer(input_serverName.getText(), IForumServer.SERVER_PORT);
+						dialogInputServer.setVisible(false);
+					} catch (RemoteException | NotBoundException ignore) {}
+
 				} catch (RemoteException | NotBoundException ignore) {
 				}
 			}
@@ -67,24 +75,23 @@ public class Client {
 		dialogPanel.add(dialogValid);
 
 		dialogInputServer.add(dialogPanel);
-		dialogInputServer.setSize(400, 55);
+		dialogInputServer.setSize(450, 60);
 		dialogInputServer.setVisible(true);
 	}
 
-	private static void selectServer(String host)
+	private static void selectServer(String host, int port)
 	        throws RemoteException, NotBoundException {
 
-		Registry registry = LocateRegistry.getRegistry(host,
-		        IForumServer.SERVER_PORT);
+		Registry registry = LocateRegistry.getRegistry(host, port);
 
 		String[] servers = registry.list();
 
-		showMenu(host, servers[0]);
+		showMenu(host, port, servers[0]);
 	}
 
-	public static void showMenu(String host, String lookup)
+	public static void showMenu(String host, int port, String lookup)
 	        throws RemoteException {
-		ViewMenu vm = new ViewMenu(host, lookup);
+		ViewMenu vm = new ViewMenu(host, port, lookup);
 		vm.showMenu();
 	}
 }
