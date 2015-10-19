@@ -7,9 +7,9 @@ package org.alma.distributedforum.server.exception;
  */
 public class SubjectNotFound extends Exception {
 
-	private static final long serialVersionUID = 508993642696482619L;
+    private static final long serialVersionUID = 508993642696482619L;
 
-	public SubjectNotFound(String s) {
-		super(s);
-	}
+    public SubjectNotFound(String s) {
+        super(s);
+    }
 }

@@ -10,28 +10,29 @@ import java.rmi.registry.Registry;
  * @author dralagen
  */
 public class Server {
-  public static void main(String[] args) {
-    try {
+    public static void main(String[] args) {
+        try {
 
-      Integer serverPort;
-      try {
-        serverPort = Integer.valueOf(System.getProperty("server.port"));
-      } catch (NumberFormatException e) {
-        serverPort = IForumServer.SERVER_PORT;
-      }
+            Integer serverPort;
+            try {
+                serverPort = Integer.valueOf(System.getProperty("server.port"));
+            } catch (NumberFormatException e) {
+                serverPort = IForumServer.SERVER_PORT;
+            }
 
-      String hostName = System.getProperty("server.hostname", InetAddress.getLocalHost().getHostName());
+            String hostName = System.getProperty("server.hostname",
+                    InetAddress.getLocalHost().getHostName());
 
+            Registry registry = LocateRegistry.createRegistry(serverPort);
 
-      Registry registry = LocateRegistry.createRegistry(serverPort);
+            IForumServer forum = new ForumServer(serverPort);
+            registry.rebind(hostName, forum);
 
-      IForumServer forum = new ForumServer(serverPort);
-      registry.rebind(hostName,forum);
+            System.out
+                    .println("Server started : " + hostName + ":" + serverPort);
 
-      System.out.println("Server started : " + hostName + ":" + serverPort);
-
-    } catch (Exception e) {
-      e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
-  }
 }

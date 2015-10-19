@@ -2,18 +2,17 @@ package org.alma.distributedforum.client;
 
 public class ForumCustomer {
 
-	private String name;
+    private String name;
 
+    public ForumCustomer(String name) {
+        this.name = name;
+    }
 
-	public ForumCustomer(String name) {
-		this.name=name;
-	}
+    public String getNom() {
+        return name;
+    }
 
-	public String getNom() {
-		return name;
-	}
-
-	public void setNom(String name) {
-		this.name = name;
-	}
+    public void setNom(String name) {
+        this.name = name;
+    }
 }
