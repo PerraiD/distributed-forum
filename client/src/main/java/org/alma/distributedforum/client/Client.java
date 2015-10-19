@@ -24,67 +24,83 @@ import org.alma.distributedforum.server.IForumServer;
  * @author dralagen
  */
 public class Client {
-	static JDialog dialogSelectServer;
+    static JDialog dialogSelectServer;
 
-	public static void main(String[] args) {
-		try {
+    public static void main(String[] args) {
+        try {
 
-			selectServer(null);
+            selectServer(null, IForumServer.SERVER_PORT);
 
-		} catch (ConnectException e) {
-			inputServer();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
+        } catch (ConnectException e) {
+            inputServer();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
-	private static void inputServer() {
-		final JDialog dialogInputServer = new JDialog();
-		dialogInputServer
-		        .setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+    private static void inputServer() {
+        final JDialog dialogInputServer = new JDialog();
+        dialogInputServer
+                .setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 
-		JPanel dialogPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        JPanel dialogPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
 
-		JLabel label_serverName = new JLabel("Server : ");
+        JLabel label_serverName = new JLabel("Server : ");
 
-		dialogPanel.add(label_serverName);
+        dialogPanel.add(label_serverName);
 
-		final JTextField input_serverName = new JTextField(15);
-		dialogPanel.add(input_serverName);
+        final JTextField input_serverName = new JTextField(15);
+        dialogPanel.add(input_serverName);
 
-		JButton dialogValid = new JButton("Connect");
-		dialogValid.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				try {
-					selectServer(input_serverName.getText());
-					dialogInputServer.setVisible(false);
-				} catch (RemoteException | NotBoundException ignore) {
-				}
-			}
-		});
+        JLabel label_serverPort = new JLabel("Port : ");
 
-		dialogPanel.add(dialogValid);
+        dialogPanel.add(label_serverPort);
 
-		dialogInputServer.add(dialogPanel);
-		dialogInputServer.setSize(400, 55);
-		dialogInputServer.setVisible(true);
-	}
+        final JTextField input_serverPort = new JTextField(
+                String.valueOf(IForumServer.SERVER_PORT));
+        dialogPanel.add(input_serverPort);
 
-	private static void selectServer(String host)
-	        throws RemoteException, NotBoundException {
+        JButton dialogValid = new JButton("Connect");
+        dialogValid.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    selectServer(input_serverName.getText(),
+                            Integer.parseInt(input_serverPort.getText()));
+                    dialogInputServer.setVisible(false);
+                } catch (NumberFormatException e1) {
+                    try {
+                        selectServer(input_serverName.getText(),
+                                IForumServer.SERVER_PORT);
+                        dialogInputServer.setVisible(false);
+                    } catch (RemoteException | NotBoundException ignore) {
+                    }
 
-		Registry registry = LocateRegistry.getRegistry(host,
-		        IForumServer.SERVER_PORT);
+                } catch (RemoteException | NotBoundException ignore) {
+                }
+            }
+        });
 
-		String[] servers = registry.list();
+        dialogPanel.add(dialogValid);
 
-		showMenu(host, servers[0]);
-	}
+        dialogInputServer.add(dialogPanel);
+        dialogInputServer.setSize(450, 60);
+        dialogInputServer.setVisible(true);
+    }
 
-	public static void showMenu(String host, String lookup)
-	        throws RemoteException {
-		ViewMenu vm = new ViewMenu(host, lookup);
-		vm.showMenu();
-	}
+    private static void selectServer(String host, int port)
+            throws RemoteException, NotBoundException {
+
+        Registry registry = LocateRegistry.getRegistry(host, port);
+
+        String[] servers = registry.list();
+
+        showMenu(host, port, servers[0]);
+    }
+
+    public static void showMenu(String host, int port, String lookup)
+            throws RemoteException {
+        ViewMenu vm = new ViewMenu(host, port, lookup);
+        vm.showMenu();
+    }
 }

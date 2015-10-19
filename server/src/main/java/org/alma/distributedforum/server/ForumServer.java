@@ -16,112 +16,123 @@ import org.alma.distributedforum.server.exception.SubscribeListeningException;
 
 public class ForumServer extends UnicastRemoteObject implements IForumServer {
 
-	private static final long serialVersionUID = 41305478188360920L;
+    private static final long serialVersionUID = 41305478188360920L;
 
-	private static enum clientSubjectAction {
-		APPEND, REMOVE
-	};
+    private enum clientSubjectAction {
+        APPEND, REMOVE
+    }
 
-	private List<ISubject> subjectList;
-	private Set<ICustomerForum> clientList;
+    private List<ISubject> subjectList;
+    private Set<ICustomerForum> clientList;
 
-	protected ForumServer() throws RemoteException {
-		super(IForumServer.SERVER_PORT);
+    public ForumServer() throws RemoteException {
+        this(IForumServer.SERVER_PORT);
+    }
 
-		subjectList = Collections.synchronizedList(new ArrayList<ISubject>());
-		clientList = Collections
-		        .synchronizedSet(new LinkedHashSet<ICustomerForum>());
+    public ForumServer(int serverPort) throws RemoteException {
+        super(serverPort);
 
-		/** some subjectList for the moment **/
+        subjectList = Collections.synchronizedList(new ArrayList<ISubject>());
+        clientList = Collections
+                .synchronizedSet(new LinkedHashSet<ICustomerForum>());
 
-		subjectList.add(new Subject("Sport"));
-		subjectList.add(new Subject("Musique"));
-		subjectList.add(new Subject("Art"));
+        /** some subjectList for the moment **/
 
-	}
+        subjectList.add(new Subject("Sport"));
+        subjectList.add(new Subject("Musique"));
+        subjectList.add(new Subject("Art"));
 
-	/**
-	 * Find the subject with good name
-	 *
-	 * @param name
-	 *            name of subject
-	 * @return subject found
-	 * @throws SubjectNotFound
-	 *             if no subject have good name
-	 * @throws RemoteException
-	 */
-	private ISubject findSubject(String name)
-	        throws SubjectNotFound, RemoteException {
-		for (ISubject s : subjectList) {
-			if (s.getName().equals(name))
-				return s;
-		}
+    }
 
-		throw new SubjectNotFound("Subject : " + name + " not found");
-	}
+    /**
+     * Find the subject with good name
+     *
+     * @param name
+     *            name of subject
+     * @return subject found
+     * @throws SubjectNotFound
+     *             if no subject have good name
+     * @throws RemoteException
+     */
+    private ISubject findSubject(String name)
+            throws SubjectNotFound, RemoteException {
+        for (ISubject s : subjectList) {
+            if (s.getName().equals(name))
+                return s;
+        }
 
-	@Override
-	public ISubject getSubject(String name)
-	        throws SubjectNotFound, RemoteException {
+        throw new SubjectNotFound("Subject : " + name + " not found");
+    }
 
-		return findSubject(name);
-	}
+    @Override
+    public ISubject getSubject(String name)
+            throws SubjectNotFound, RemoteException {
 
-	@Override
-	public List<ISubject> listSubject(ICustomerForum client) {
-		clientList.add(client);
-		return subjectList;
-	}
+        return findSubject(name);
+    }
 
-	@Override
-	public ISubject createSubject(String name)
-	        throws RemoteException, SubjectAlreadyExist {
-		ISubject newSubject;
+    @Override
+    public List<ISubject> listSubject(ICustomerForum client) {
+        clientList.add(client);
+        return subjectList;
+    }
 
-		try {
-			newSubject = findSubject(name);
-			throw new SubjectAlreadyExist(newSubject);
-		} catch (SubjectNotFound subjectNotFound) {
-			newSubject = new Subject(name);
-			subjectList.add(newSubject);
-		}
+    @Override
+    public ISubject createSubject(String name)
+            throws RemoteException, SubjectAlreadyExist {
+        ISubject newSubject;
 
-		notifyClient(newSubject, clientSubjectAction.APPEND);
+        try {
+            newSubject = findSubject(name);
+            throw new SubjectAlreadyExist(newSubject);
+        } catch (SubjectNotFound subjectNotFound) {
+            newSubject = new Subject(name);
+            subjectList.add(newSubject);
+        }
 
-		return newSubject;
-	}
+        notifyClient(newSubject, clientSubjectAction.APPEND);
 
-	private void notifyClient(ISubject subject, clientSubjectAction action) {
-		List<ICustomerForum> oldClient = new LinkedList<>();
-		for (ICustomerForum client : clientList) {
-			try {
-				if (action.equals(clientSubjectAction.APPEND)) {
-					client.newSubject(subject);
-				} else if (action.equals(clientSubjectAction.REMOVE)) {
-					client.removeSubject(subject);
-				}
-			} catch (RemoteException e) {
-				oldClient.add(client);
-			}
-		}
+        return newSubject;
+    }
 
-		clientList.removeAll(oldClient);
-	}
+    private void notifyClient(ISubject subject, clientSubjectAction action) {
+        List<ICustomerForum> oldClient = new LinkedList<>();
+        for (ICustomerForum client : clientList) {
+            try {
+                if (action.equals(clientSubjectAction.APPEND)) {
+                    client.newSubject(subject);
+                } else if (action.equals(clientSubjectAction.REMOVE)) {
+                    client.removeSubject(subject);
+                }
+            } catch (RemoteException e) {
+                oldClient.add(client);
+            }
+        }
 
-	@Override
-	public boolean deleteSuject(String name) throws RemoteException,
-	        SubscribeListeningException, SubjectNotFound {
-		Subject removeSubject = (Subject) findSubject(name);
+        clientList.removeAll(oldClient);
+    }
 
-		if (removeSubject.haveSucribe())
-			throw new SubscribeListeningException();
+    @Override
+    public boolean deleteSubject(String name) throws RemoteException,
+            SubscribeListeningException, SubjectNotFound {
 
-		boolean result = subjectList.remove(removeSubject);
+        Subject removeSubject;
+        try {
+            removeSubject = (Subject) findSubject(name);
+        } catch (SubjectNotFound e) {
+            throw new SubjectNotFound(
+                    "Subject : " + name + " not found or already deleted");
+        }
 
-		if (result) {
-			notifyClient(removeSubject, clientSubjectAction.REMOVE);
-		}
+        if (removeSubject.haveSucribe())
+            throw new SubscribeListeningException();
 
-		return result;
-	}
+        boolean result = subjectList.remove(removeSubject);
+
+        if (result) {
+            notifyClient(removeSubject, clientSubjectAction.REMOVE);
+        }
+
+        return result;
+    }
 }
